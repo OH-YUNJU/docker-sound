@@ -227,30 +227,38 @@ async def save_realtime_data(realtime: RealtimeInsert):
 
     tokens = [token[0] for token in tokens]
     
-    for token in tokens:
-        message = {
-            "message": {
-                "token": token,
-                "notification": {
-                    "title": "위험 소음 감지",
-                    "body": f'{realtime.label}가 감지되었습니다!'
+    if(realtime.label == "Bark" or realtime.label == "Car horn" or realtime.label == "Siren"):
+        if (realtime.label == "Siren"):
+            realtime.label = "사이렌 소리"
+        elif(realtime.label == "Car horn"):
+            realtime.label = "경적 소리"
+        elif(realtime.label == "Bark"):
+            realtime.label = "개 짖는 소리"
+            
+        for token in tokens:
+            message = {
+                "message": {
+                    "token": token,
+                    "notification": {
+                        "title": "위험 소음 감지",
+                        "body": f'{realtime.label}가 감지되었습니다!'
+                    }
                 }
             }
-        }
 
-        response = requests.post(url, headers=headers, json=message)
-        
-        try:
-            response_data = response.json()
-            print("response_data:", response_data)
-        except ValueError as e:
-            raise HTTPException(status_code=response.status_code, detail=f"Invalid JSON response: {response.text}")
-        
-        if response.status_code != 200:
-            failed_tokens.append(token)
+            response = requests.post(url, headers=headers, json=message)
+            
+            try:
+                response_data = response.json()
+                print("response_data:", response_data)
+            except ValueError as e:
+                raise HTTPException(status_code=response.status_code, detail=f"Invalid JSON response: {response.text}")
+            
+            if response.status_code != 200:
+                failed_tokens.append(token)
     
-    if failed_tokens:
-        raise HTTPException(status_code=400, detail=f"Failed to send notification to tokens: {failed_tokens}")
+        if failed_tokens:
+            raise HTTPException(status_code=400, detail=f"Failed to send notification to tokens: {failed_tokens}")
     
     return insert
 
