@@ -1,0 +1,25 @@
+# .env
+.env
+secret.json
+
+#test
+test/package-lock.json
+test/node_modules
+test/node_modules/** 
+
+## nodejs 
+nodejs/node_modules
+nodejs/node_modules/**
+nodejs/package-lock.json
+
+## docker
+docker/mysql/.env
+
+python/secret.json
+
+*/**/node_modules
+*/**/package-lock.json
+*/**/**/package-lock.json
+
+python/src/soundproject-26e1d-firebase-adminsdk-ntoea-046129bd6b.json
+python/.env
